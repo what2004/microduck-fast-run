@@ -48,7 +48,15 @@ def make_microduck_fast_run_env_cfg(
             "asset_cfg": SceneEntityCfg("robot"),
         },
     )
-
+    # Penalize actual body-frame lateral velocity. heading_hold only constrains
+    # yaw angle and cannot prevent a crab-like sideways drift.
+    cfg.rewards["lateral_velocity_l2"] = RewardTermCfg(
+        func=microduck_mdp.roulade_lateral_velocity_penalty,
+        weight=-2.0,
+        params={
+            "asset_cfg": SceneEntityCfg("robot"),
+        },
+    )
     return cfg
 
 
