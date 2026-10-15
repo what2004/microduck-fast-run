@@ -57,6 +57,15 @@ def make_microduck_fast_run_env_cfg(
             "asset_cfg": SceneEntityCfg("robot"),
         },
     )
+     # Prevent the low-lateral-drift gait from continuously turning.
+    # Positive squared cost, therefore the reward weight must be negative.
+    cfg.rewards["yaw_rate_l2"] = RewardTermCfg(
+        func=microduck_mdp.yaw_rate_l2,
+        weight=-1.0,
+        params={
+            "asset_cfg": SceneEntityCfg("robot"),
+        },
+    )
     return cfg
 
 

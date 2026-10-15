@@ -5109,6 +5109,19 @@ def heading_hold_reward(
     return torch.exp(-(err ** 2) / std ** 2)
 
 
+def yaw_rate_l2(
+    env: ManagerBasedRlEnv,
+    asset_cfg: SceneEntityCfg = _DEFAULT_ASSET_CFG,
+) -> torch.Tensor:
+    """Squared body-frame yaw rate; returns a positive cost."""
+    asset: Entity = env.scene[asset_cfg.name]
+    yaw_rate = torch.nan_to_num(
+        asset.data.root_link_ang_vel_b[:, 2],
+        nan=0.0,
+    )
+    return yaw_rate.pow(2)
+
+
 def action_over_limit_penalty(
     env: ManagerBasedRlEnv,
     action_name: str = "joint_pos",
